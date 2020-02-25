@@ -1,6 +1,8 @@
 package com.example.documentspicker;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.Manifest;
 
 import android.app.Activity;
@@ -53,10 +55,22 @@ public class DocumentsPickerPlugin implements MethodCallHandler, PluginRegistry.
       if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_READ_PERMISSION);
       } else {
+        int maxCount = call.argument("maxCount");
         this.result = result;
-        FilePickerBuilder.getInstance().setMaxCount(1)
+        FilePickerBuilder.getInstance().setMaxCount(maxCount)
                 .setActivityTheme(R.style.LibAppTheme)
                 .pickFile(activity);
+      }
+    } else if(call.method.equals("pickImages")){
+      if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_READ_PERMISSION);
+      } else {
+        int maxCount = call.argument("maxCount");
+        this.result = result;
+        FilePickerBuilder.getInstance().setMaxCount(maxCount)
+                .setActivityTheme(R.style.LibAppTheme)
+                .enableCameraSupport(false)
+                .pickPhoto(activity);
       }
     } else {
       result.notImplemented();
@@ -70,6 +84,15 @@ public class DocumentsPickerPlugin implements MethodCallHandler, PluginRegistry.
       if (intent != null)
         docPaths = intent.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS);
     
+      this.result.success(docPaths);
+
+      return true;
+    }
+
+    if (requestCode == FilePickerConst.REQUEST_CODE_PHOTO){
+      if (intent != null)
+        docPaths = intent.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA);
+
       this.result.success(docPaths);
 
       return true;

@@ -13,7 +13,14 @@ class _MyAppState extends State<MyApp> {
   List<String> docPaths;
 
   void _getDocuments() async {
-    docPaths = await DocumentsPicker.pickDocuments;
+    docPaths = await DocumentsPicker.pickDocuments(maxCount: 10);
+
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _getImages() async {
+    docPaths = await DocumentsPicker.pickImages(maxCount: 10);
 
     if (!mounted) return;
     setState(() {});
@@ -35,8 +42,11 @@ class _MyAppState extends State<MyApp> {
                 child: Text('Get documents'),
                 onPressed: _getDocuments,
               ),
-              if (docPaths != null)
-                Text(docPaths.join('\n'))
+              FlatButton(
+                child: Text('Get Images'),
+                onPressed: _getImages,
+              ),
+              if (docPaths != null) Text(docPaths.join('\n'))
             ],
           ),
         ),
