@@ -42,14 +42,7 @@ public class DocumentsPickerPlugin implements FlutterPlugin, MethodChannel.Metho
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
-        DocumentsPickerDelegate delegate = this.delegate;
-        if (delegate != null) {
-            activityBinding.removeActivityResultListener(delegate);
-        }
-
-        this.delegate = (DocumentsPickerDelegate) null;
-        this.channel = (MethodChannel) null;
-        this.activityBinding = (ActivityPluginBinding) null;
+        onDetachedFromActivity();
     }
 
     @Override
@@ -59,7 +52,14 @@ public class DocumentsPickerPlugin implements FlutterPlugin, MethodChannel.Metho
 
     @Override
     public void onDetachedFromActivity() {
-        onDetachedFromActivity();
+        DocumentsPickerDelegate delegate = this.delegate;
+        if (delegate != null) {
+            activityBinding.removeActivityResultListener(delegate);
+        }
+
+        this.delegate = (DocumentsPickerDelegate) null;
+        this.channel = (MethodChannel) null;
+        this.activityBinding = (ActivityPluginBinding) null;
     }
 
     @Override
